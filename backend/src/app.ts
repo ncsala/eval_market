@@ -1,11 +1,16 @@
 import express from 'express';
 import { sequelize, createDatabaseIfNotExists } from './infrastructure/config/database';
 import authRoutes from './infrastructure/adapters/http/routes/authRoutes';
+import { errorMiddleware, notFoundMiddleware } from './infrastructure/adapters/http/middlewares/errorMiddleware';
 
 const app = express();
 
 app.use(express.json());
 app.use('/auth', authRoutes);
+
+app.use(notFoundMiddleware);
+
+app.use(errorMiddleware);
 
 async function initializeDatabase() {
   try {

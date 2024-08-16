@@ -1,10 +1,12 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../config/database';
+import { UserRole } from '../../domain/entities/userRoles';
 
 class User extends Model {
   public id!: number;
   public email!: string;
   public password!: string;
+  public role!: UserRole;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -26,6 +28,10 @@ User.init(
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM(...Object.values(UserRole)),
       allowNull: false,
     },
   },
