@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Modal, ModalDialog, Typography, Input, Button, FormControl, FormLabel, FormHelperText, Link } from '@mui/joy';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { register as registerAction } from '../../redux/slices/authSlice';
+import { register as registerAction, clearError } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface RegisterModalProps {
@@ -17,25 +17,25 @@ interface RegisterFormInputs {
 }
 
 const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm<RegisterFormInputs>();
+  const { register, handleSubmit, formState: { errors }, getValues, reset } = useForm<RegisterFormInputs>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isLoading, error } = useAppSelector((state) => state.auth);
 
-  const onSubmit: SubmitHandler<RegisterFormInputs> = (data) => {
-    dispatch(registerAction({ email: data.Correo, password: data.Contraseña }))
-      .unwrap()
-      .then(() => {
-        onClose();
-      })
-      .catch(() => {
-        // Error is handled by the reducer
-      });
+  const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
+    try {
+      await dispatch(registerAction({ email: data.Correo, password: data.Contraseña })).unwrap();
+      reset();
+      onClose();
+      navigate('/login', { state: { registrationSuccess: true } });
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
   };
 
   const handleLoginClick = () => {
-    onClose(); 
-    navigate('/login');
+    dispatch(clearError());
+    onClose();
   };
 
   return (
@@ -58,7 +58,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
               placeholder="name@mail.com"
             />
             {errors.Correo && <FormHelperText>{errors.Correo.message}</FormHelperText>}
-            {error && <FormHelperText>Este usuario ya existe, prueba con otro</FormHelperText>}
+            {error && <FormHelperText>{error}</FormHelperText>}
           </FormControl>
           <FormControl sx={{ mt: 2 }} error={!!errors.Contraseña}>
             <FormLabel>Contraseña</FormLabel>
@@ -84,7 +84,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
             />
             {errors["Confirmar contraseña"] && <FormHelperText>{errors["Confirmar contraseña"].message}</FormHelperText>}
           </FormControl>
-          <Button type="submit" fullWidth sx={{ mt: 3 }} loading={isLoading}>
+          <Button type="submit" fullWidth sx={{ mt: 3 }} loading={isLoading} onClick={(e) => e.stopPropagation()}>
             REGISTRARSE
           </Button>
           <Typography
@@ -92,8 +92,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
             sx={{
               mt: 2,
               textAlign: 'center',
-              fontSize: '0.875rem', 
-              fontWeight: 400,  
+              fontSize: '0.875rem',
+              fontWeight: 400,
             }}
           >
             <Link

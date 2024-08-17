@@ -110,3 +110,5 @@ package-lock.json
 
 # Ignora todos los archivos tempCodeRunnerFile.js en todas las carpetas
 **/tempCodeRunnerFile.js
+frontend/combine-ts-files.cjs
+frontend/combined.ts

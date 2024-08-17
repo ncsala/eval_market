@@ -1,9 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import { sequelize, createDatabaseIfNotExists } from './infrastructure/config/database';
 import authRoutes from './infrastructure/adapters/http/routes/authRoutes';
 import { errorMiddleware, notFoundMiddleware } from './infrastructure/adapters/http/middlewares/errorMiddleware';
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 app.use('/auth', authRoutes);

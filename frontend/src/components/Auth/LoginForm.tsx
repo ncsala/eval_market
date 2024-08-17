@@ -23,11 +23,13 @@ const LoginForm: React.FC = () => {
   }, [dispatch]);
 
   const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    dispatch(login({ email: data.Correo, password: data.Contraseña }));
+    if (!openRegisterModal) {
+      dispatch(login({ email: data.Correo, password: data.Contraseña }));
+    }
   };
 
   const handleRegisterClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Previene que el formulario se envíe
+    e.preventDefault();
     setOpenRegisterModal(true);
   };
 

@@ -1,18 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { authService } from "../../services/authService";
-
-interface User {
-  id: number;
-  email: string;
-  role: string;
-  token: string;
-}
-
-interface AuthState {
-  user: User | null;
-  isLoading: boolean;
-  error: string | null;
-}
+import { User, AuthState } from "../../types/user";
 
 const initialState: AuthState = {
   user: null,
@@ -20,12 +8,19 @@ const initialState: AuthState = {
   error: null,
 };
 
+export const logout = createAsyncThunk("auth/logout", async () => {
+  localStorage.removeItem("user");
+});
+
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+  async (
+    { email, password }: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await authService.register(email, password);
-      return response;
+      await authService.register(email, password);
+      return;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -34,10 +29,13 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+  async (
+    { email, password }: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await authService.login(email, password);
-      return response;
+      const user = await authService.login(email, password);
+      return user;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -48,11 +46,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      authService.logout();
-      state.user = null;
-      state.error = null;
-    },
     clearError: (state) => {
       state.error = null;
     },
@@ -62,19 +55,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(register.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(register.fulfilled, (state, action: PayloadAction<User>) => {
-        state.isLoading = false;
-        state.user = action.payload;
-        state.error = null;
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      })
       .addCase(login.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -83,13 +63,38 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload;
         state.error = null;
+        console.log("User set in Redux state:", action.payload);
       })
       .addCase(login.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        state.user = null;
+      })
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.isLoading = false;
+        state.user = null;
+        state.error = null;
+      })
+      .addCase(logout.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(register.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(register.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
   },
 });
 
-export const { logout, clearError, setUser } = authSlice.actions;
+export const { clearError, setUser } = authSlice.actions;
 export default authSlice.reducer;

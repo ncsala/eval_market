@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box } from '@mui/joy';
 import Sidebar from '../Sidebar/Sidebar';
 import Navbar from '../Navbar/Navbar';
+import { useAppSelector } from '@/redux/hooks';
+import { UserRole } from '@/types/user';
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAppSelector((state) => state.auth);
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+  useEffect(() => {
+    console.log('User in Layout:', user);
+  }, [user]);
+
+  const showSidebar = user && (user.role === UserRole.ADMINISTRADOR || user.role === UserRole.VENDEDOR);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Navbar />
       <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
-        <Sidebar />
+        {showSidebar && <Sidebar />}
         <Box component="main" sx={{ flexGrow: 1, p: 3, overflow: 'auto' }}>
           {children}
         </Box>

@@ -1,17 +1,22 @@
 import React from 'react';
 import { Sheet, List, ListItem, ListItemButton, ListItemContent } from '@mui/joy';
 import { useNavigate, useLocation } from 'react-router-dom';
-
-const menuItems = [
-  { title: 'Dashboard', path: '/' },
-  { title: 'Cotizaciones', path: '/cotizaciones' },
-  { title: 'Ordenes', path: '/ordenes' },
-  { title: 'Inventario', path: '/inventario' },
-];
+import { useAppSelector } from '@/redux/hooks';
+import { UserRole } from '@/types/user';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const menuItems = [
+    { title: 'Dashboard', path: '/', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
+    { title: 'Cotizaciones', path: '/cotizaciones', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
+    { title: 'Ordenes', path: '/ordenes', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
+    { title: 'Inventario', path: '/inventory', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
+  ];
+
+  const filteredMenuItems = menuItems.filter(item => user && item.roles.includes(user.role as UserRole));
 
   return (
     <Sheet
@@ -27,7 +32,7 @@ const Sidebar: React.FC = () => {
       }}
     >
       <List sx={{ flexGrow: 1 }}>
-        {menuItems.map((item) => (
+        {filteredMenuItems.map((item) => (
           <ListItem key={item.title}>
             <ListItemButton
               selected={location.pathname === item.path}

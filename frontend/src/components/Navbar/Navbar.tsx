@@ -1,6 +1,5 @@
-// src/components/Navbar/Navbar.tsx
 import React from 'react';
-import { Box, Typography, Button, Sheet } from '@mui/joy';
+import { Box, Typography, Button, Sheet, Menu, MenuItem } from '@mui/joy';
 import PersonIcon from '@mui/icons-material/Person';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { logout } from '@/redux/slices/authSlice';
@@ -10,14 +9,28 @@ const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
+    handleClose();
   };
 
   const handleLogin = () => {
     navigate('/login');
   };
+
+  const displayName = user?.email
+    ? user.email.split('@')[0]
+    : 'Usuario';
 
   return (
     <Sheet
@@ -49,9 +62,18 @@ const Navbar: React.FC = () => {
           <PersonIcon />
         </Box>
         {user ? (
-          <Button variant="outlined" color="neutral" onClick={handleLogout}>
-            Cerrar sesión
-          </Button>
+          <>
+            <Button variant="outlined" color="neutral" onClick={handleClick}>
+              {displayName}
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+            </Menu>
+          </>
         ) : (
           <Button variant="outlined" color="neutral" onClick={handleLogin}>
             Iniciar sesión

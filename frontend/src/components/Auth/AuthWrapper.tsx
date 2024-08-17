@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setUser } from '../../redux/slices/authSlice';
+import { setUser, logout } from '../../redux/slices/authSlice';
+import { User } from '../../types/user';
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -19,12 +20,15 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         try {
-          const parsedUser = JSON.parse(storedUser);
+          const parsedUser = JSON.parse(storedUser) as User;
           dispatch(setUser(parsedUser));
         } catch (error) {
           console.error('Error parsing stored user:', error);
           localStorage.removeItem('user');
+          dispatch(logout());
         }
+      } else {
+        dispatch(logout());
       }
       setIsInitialized(true);
     };
@@ -34,10 +38,10 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
 
   useEffect(() => {
     if (isInitialized) {
-      if (user && location.pathname === '/login') {
-        navigate('/');
-      } else if (!user && location.pathname !== '/login' && location.pathname !== '/') {
-        navigate('/login');
+      if (user) {
+        if (location.pathname === '/login') {
+          navigate('/');
+        }
       }
     }
   }, [user, isInitialized, navigate, location.pathname]);
