@@ -1,36 +1,44 @@
+// src/pages/Home/Home.tsx
 import React from 'react';
 import { Box, Typography, Button } from '@mui/joy';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { logout } from '@/redux/slices/authSlice';
+import { useAppSelector } from '@/redux/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   return (
-    <Box sx={{ maxWidth: 'sm', mx: 'auto', my: 4, textAlign: 'center' }}>
-      <Typography level="h1" component="h1">
-        Bienvenido al Marketplace de MagicLog
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      height: '100%',
+    }}>
+      <Typography level="h2" component="h1" sx={{ mb: 2 }}>
+        Crea tu producto
       </Typography>
-      {user && (
-        <Box sx={{ mt: 2 }}>
-          <Typography>
-            Hola, {user.email}
-          </Typography>
-          <Button
-            onClick={handleLogout}
-            variant="outlined"
-            color="neutral"
-            sx={{ mt: 2 }}
-          >
-            Cerrar sesión
-          </Button>
-        </Box>
-      )}
+      <Typography level="body-md" sx={{ mb: 2 }}>
+        Organiza de manera profesional tu inventario
+      </Typography>
+      <Button variant="solid" color="primary" size="lg" sx={{ mb: 2 }}>
+        CREAR PRODUCTO
+      </Button>
+      <Typography level="body-sm">
+        <Button
+          variant="plain"
+          color="neutral"
+          onClick={user ? undefined : handleLogin}
+        >
+          Inicia sesión para poder ver tu inventario
+        </Button>
+      </Typography>
     </Box>
   );
 };

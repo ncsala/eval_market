@@ -34,8 +34,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
   };
 
   const handleLoginClick = () => {
-    onClose(); // Cierra el modal de registro
-    navigate('/login'); // Navega a la página de inicio de sesión
+    onClose(); 
+    navigate('/login');
   };
 
   return (
@@ -92,8 +92,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
             sx={{
               mt: 2,
               textAlign: 'center',
-              fontSize: '0.875rem',  // Ajusta esto si necesitas un tamaño específico
-              fontWeight: 400,       // Ajusta el peso de la fuente si es necesario
+              fontSize: '0.875rem', 
+              fontWeight: 400,  
             }}
           >
             <Link

@@ -73,7 +73,7 @@ const LoginForm: React.FC = () => {
         <Input
           {...register("Contraseña", {
             required: "La contraseña es requerida",
-            maxLength: { value: 8, message: "La contraseña no debe exceder 8 caracteres" }
+            maxLength: { value: 15, message: "La contraseña no debe exceder 15 caracteres" }
           })}
           type="password"
           placeholder="••••••"
