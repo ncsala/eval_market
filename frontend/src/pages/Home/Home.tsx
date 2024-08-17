@@ -1,32 +1,36 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/joy';
-import { Link as RouterLink } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { logout } from '@/redux/slices/authSlice';
 
 const Home: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <Box sx={{ maxWidth: 'sm', mx: 'auto', my: 4, textAlign: 'center' }}>
       <Typography level="h1" component="h1">
         Bienvenido al Marketplace de MagicLog
       </Typography>
-      <Box sx={{ mt: 2 }}>
-        <Button
-          component={RouterLink}
-          to="/register"
-          variant="solid"
-          color="primary"
-          sx={{ mr: 2 }}
-        >
-          Registrarse
-        </Button>
-        <Button
-          component={RouterLink}
-          to="/login"
-          variant="outlined"
-          color="neutral"
-        >
-          Iniciar sesión
-        </Button>
-      </Box>
+      {user && (
+        <Box sx={{ mt: 2 }}>
+          <Typography>
+            Hola, {user.email}
+          </Typography>
+          <Button
+            onClick={handleLogout}
+            variant="outlined"
+            color="neutral"
+            sx={{ mt: 2 }}
+          >
+            Cerrar sesión
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

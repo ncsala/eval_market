@@ -1,87 +1,26 @@
-import React, { useState } from 'react';
-import { Box, Typography, Input, Button, Link, FormControl, FormLabel, FormHelperText } from '@mui/joy';
+import React, { useEffect } from 'react';
+import { Box, Typography } from '@mui/joy';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '@/redux/hooks';
+import { LoginForm } from '@/components';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const { user } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
-    } else {
-      // Aquí iría la lógica para crear la cuenta
-      console.log('Intento de registro con:', { email, password });
+  useEffect(() => {
+    if (user) {
+      navigate('/');
     }
-  };
+  }, [user, navigate]);
+
+  if (user) {
+    return null;
+  }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-      }}
-    >
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          width: '100%',
-          maxWidth: 400,
-          p: 3,
-          border: '1px solid',
-          borderColor: 'neutral.outlinedBorder',
-          borderRadius: 'sm',
-        }}
-      >
-        <Typography level="h4" component="h1" sx={{ mb: 2 }}>
-          Crea una cuenta
-        </Typography>
-        <FormControl error={!!error}>
-          <FormLabel>Correo</FormLabel>
-          <Input
-            type="email"
-            placeholder="name@mail.com"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {error && <FormHelperText>{error}</FormHelperText>}
-        </FormControl>
-        <FormControl sx={{ mt: 2 }}>
-          <FormLabel>Contraseña</FormLabel>
-          <Input
-            type="password"
-            placeholder="••••••"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormControl>
-        <FormControl sx={{ mt: 2 }}>
-          <FormLabel>Confirmar contraseña</FormLabel>
-          <Input
-            type="password"
-            placeholder="••••••"
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </FormControl>
-        <Button type="submit" fullWidth sx={{ mt: 3 }}>
-          Registrarse
-        </Button>
-        <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Link component="button" variant="plain" sx={{ fontSize: 'sm' }}>
-            Inicia sesión
-          </Link>
-        </Box>
-      </Box>
+    <Box sx={{ maxWidth: 'sm', mx: 'auto', my: 4 }}>
+      <LoginForm />
     </Box>
   );
 };
