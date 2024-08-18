@@ -1,57 +1,43 @@
-import React from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/hooks";
-import { Home } from "@/pages/Home";
-import { Login } from "@/pages/Login";
+import { Home, Login, AdminDashboard, SellerView } from "@/pages";
 import { InventoryList, CreateProduct } from '@/pages/Inventory';
-import Layout from './components/Layout/Layout';
-import AuthWrapper from "@/components/Auth/AuthWrapper";
+import { AuthWrapper, LayoutWrapper } from "@/components";
 import { UserRole } from '@/types/user';
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles: UserRole[] }> = ({ children, allowedRoles }) => {
-  const { user } = useAppSelector((state) => state.auth);
-  if (!user) {
-    console.log('ProtectedRoute: No user detected, should navigate to login');
-    return <Navigate to="/" />;
-  }
-  if (!allowedRoles.includes(user!.role)) {
-    console.log('ProtectedRoute: User role not allowed, should navigate to home');
-    return <Navigate to="/" />;
-  }
-  return <>{children}</>;
-};
-
 function App() {
-  return (
+  const { user } = useAppSelector((state) => state.auth);
 
+  return (
     <BrowserRouter>
       <AuthWrapper>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Layout><Home /></Layout>} />
-          {/* <Route
-            path="/inventory"
-            element={
-              <ProtectedRoute allowedRoles={[UserRole.ADMINISTRADOR, UserRole.VENDEDOR]}>
-                <Layout><Inventory /></Layout>
-              </ProtectedRoute>
-            }
-          /> */}
+          <Route path="/" element={<LayoutWrapper><Home /></LayoutWrapper>} />
+          <Route path="/vendedor" element={<LayoutWrapper><SellerView /></LayoutWrapper>} />
           <Route
             path="/inventory"
             element={
-              <ProtectedRoute allowedRoles={[UserRole.ADMINISTRADOR, UserRole.VENDEDOR]}>
-                <Layout><InventoryList /></Layout>
-              </ProtectedRoute>
+              user && user.role === UserRole.VENDEDOR
+                ? <LayoutWrapper><InventoryList /></LayoutWrapper>
+                : <Navigate to="/vendedor" />
             }
           />
           <Route
             path="/inventory/create"
             element={
-              <ProtectedRoute allowedRoles={[UserRole.ADMINISTRADOR, UserRole.VENDEDOR]}>
-                <Layout><CreateProduct /></Layout>
-              </ProtectedRoute>
+              user && user.role === UserRole.VENDEDOR
+                ? <LayoutWrapper><CreateProduct /></LayoutWrapper>
+                : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              user && user.role === UserRole.ADMINISTRADOR
+                ? <LayoutWrapper><AdminDashboard /></LayoutWrapper>
+                : <Navigate to="/" />
             }
           />
         </Routes>
@@ -61,5 +47,3 @@ function App() {
 }
 
 export default App;
-
-

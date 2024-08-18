@@ -10,13 +10,15 @@ const Sidebar: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   const menuItems = [
-    { title: 'Dashboard', path: '/', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
-    { title: 'Cotizaciones', path: '/cotizaciones', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
-    { title: 'Ordenes', path: '/ordenes', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
-    { title: 'Inventario', path: '/inventory', roles: [UserRole.ADMINISTRADOR, UserRole.VENDEDOR] },
+    { title: 'Home', path: '/', roles: null },
+    { title: 'Inventario', path: '/inventory', roles: null },
+    { title: 'Dashboard', path: '/admin', roles: [UserRole.ADMINISTRADOR] },
+    { title: 'Crear Producto', path: '/inventory/create', roles: [UserRole.VENDEDOR] },
   ];
 
-  const filteredMenuItems = menuItems.filter(item => user && item.roles.includes(user.role as UserRole));
+  const filteredMenuItems = menuItems.filter(item => 
+    item.roles === null || (user && item.roles.includes(user.role as UserRole))
+  );
 
   return (
     <Sheet

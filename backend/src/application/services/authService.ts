@@ -27,7 +27,7 @@ export class AuthService {
 
     return newUser;
   }
-  
+
   async login(email: string, password: string): Promise<string | null> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {

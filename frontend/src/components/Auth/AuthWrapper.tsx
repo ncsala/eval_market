@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setUser, logout } from '../../redux/slices/authSlice';
-import { User } from '../../types/user';
+import { User, UserRole } from '../../types/user';
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -37,10 +37,19 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (isInitialized) {
-      if (user) {
-        if (location.pathname === '/login') {
-          navigate('/');
+    if (isInitialized && user) {
+      if (location.pathname === '/login') {
+        switch (user.role) {
+          case UserRole.ADMINISTRADOR:
+            navigate('/admin');
+            break;
+          case UserRole.VENDEDOR:
+            navigate('/vendedor');
+            break;
+          case UserRole.COMPRADOR:
+          default:
+            navigate('/');
+            break;
         }
       }
     }
