@@ -24,6 +24,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles: UserRo
 
 function App() {
   return (
+
     <BrowserRouter>
       <AuthWrapper>
         <Routes>
@@ -60,3 +61,5 @@ function App() {
 }
 
 export default App;
+
+

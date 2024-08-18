@@ -23,7 +23,9 @@ jest.mock('bcrypt', () => ({
 // Mock de jwt
 jest.mock('jsonwebtoken', () => ({
   sign: jest.fn(),
+  verify: jest.fn(),
 }));
+
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -68,6 +70,14 @@ describe('AuthService', () => {
       mockUserRepository.create.mockResolvedValue(null as any);
 
       await expect(authService.register('test@example.com', 'password123'))
+        .rejects.toThrow(AppError);
+    });
+
+    it('should throw an error if password is too short', async () => {
+      const email = 'test@example.com';
+      const shortPassword = 'short';
+
+      await expect(authService.register(email, shortPassword))
         .rejects.toThrow(AppError);
     });
   });
@@ -155,6 +165,33 @@ describe('AuthService', () => {
 
       await expect(authService.changeUserRole(2, UserRole.VENDEDOR, 1))
         .rejects.toThrow(AppError);
+    });
+  });
+
+  describe('verifyAuthentication', () => {
+    it('should return true for a valid token', () => {
+      const token = 'valid_token';
+      const decodedToken = { userId: 1, role: UserRole.VENDEDOR };
+      
+      (jwt.verify as jest.Mock).mockReturnValue(decodedToken);
+
+      const result = authService.verifyAuthentication(token);
+
+      expect(result).toBe(true);
+      expect(jwt.verify).toHaveBeenCalledWith(token, process.env.JWT_SECRET);
+    });
+
+    it('should return false for an invalid token', () => {
+      const token = 'invalid_token';
+      
+      (jwt.verify as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      const result = authService.verifyAuthentication(token);
+
+      expect(result).toBe(false);
+      expect(jwt.verify).toHaveBeenCalledWith(token, process.env.JWT_SECRET);
     });
   });
 });

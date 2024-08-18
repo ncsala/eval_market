@@ -1,45 +1,39 @@
-import React, { useState } from 'react';
-import { Box, Typography, Input, Slider, Button, Grid, Card, AspectRatio } from '@mui/joy';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Input, Slider } from '@mui/joy';
 import SearchIcon from '@mui/icons-material/Search';
-
-interface Product {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  imageUrl: string;
-}
-
-const mockProducts: Product[] = [
-  { id: '1', name: 'Product name 01', sku: 'PRDCT-NM-01', price: 100.00, imageUrl: 'https://via.placeholder.com/150' },
-  { id: '2', name: 'Product name 02', sku: 'PRDCT-NM-02', price: 150.00, imageUrl: 'https://via.placeholder.com/150' },
-  { id: '3', name: 'Product name 03', sku: 'PRDCT-NM-03', price: 225.00, imageUrl: 'https://via.placeholder.com/150' },
-  { id: '4', name: 'Product name 04', sku: 'PRDCT-NM-04', price: 230.00, imageUrl: 'https://via.placeholder.com/150' },
-];
+import { ProductGrid } from '../../components/ProductGrid';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
+import { useProductSearch } from '../../hooks/useProductSearch';
 
 const Home: React.FC = () => {
-  const [priceRange, setPriceRange] = useState<number[]>([0, 1000]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const { 
+    products, 
+    isLoading, 
+    error, 
+    filters, 
+    updateSearch, 
+    updatePriceRange, 
+    maxPrice, 
+    searchTerm 
+  } = useProductSearch();
+  
+  const [localPriceRange, setLocalPriceRange] = useState([0, maxPrice]);
 
-  const handlePriceChange = (event: Event, newValue: number | number[]) => {
-    setPriceRange(newValue as number[]);
+  useEffect(() => {
+    setLocalPriceRange([filters.minPrice, filters.maxPrice]);
+  }, [filters.minPrice, filters.maxPrice]);
+
+  useEffect(() => {
+    setLocalPriceRange(prev => [prev[0], maxPrice]);
+  }, [maxPrice]);
+
+  const handlePriceChange = (_event: Event, newValue: number | number[]) => {
+    setLocalPriceRange(newValue as number[]);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handlePriceChangeCommitted = () => {
+    updatePriceRange(localPriceRange[0], localPriceRange[1]);
   };
-
-  const clearFilters = () => {
-    setPriceRange([0, 1000]);
-    setSearchTerm('');
-  };
-
-  const filteredProducts = mockProducts.filter(product => 
-    product.price >= priceRange[0] && 
-    product.price <= priceRange[1] &&
-    (product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     product.sku.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
 
   return (
     <Box sx={{ display: 'flex', p: 2 }}>
@@ -49,53 +43,29 @@ const Home: React.FC = () => {
         <Typography gutterBottom>Rango de precios</Typography>
         <Slider
           getAriaLabel={() => 'Rango de precios'}
-          value={priceRange}
+          value={localPriceRange}
           onChange={handlePriceChange}
+          onChangeCommitted={handlePriceChangeCommitted}
           valueLabelDisplay="auto"
           min={0}
-          max={1000}
+          max={maxPrice}
         />
-        <Typography>${priceRange[0]} - ${priceRange[1]}</Typography>
-        <Button variant="plain" color="neutral" onClick={clearFilters} sx={{ mt: 2 }}>
-          Borrar filtros
-        </Button>
+        <Typography>${localPriceRange[0]} - ${localPriceRange[1]}</Typography>
       </Box>
 
       {/* Contenido principal */}
       <Box sx={{ flexGrow: 1 }}>
-        {/* Buscador */}
         <Input
-          startDecorator={<SearchIcon />}
+          endDecorator={<SearchIcon />}
           placeholder="Buscar por nombre y/o SKU"
           value={searchTerm}
-          onChange={handleSearchChange}
+          onChange={(e) => updateSearch(e.target.value)}
           sx={{ width: '100%', mb: 2 }}
         />
 
-        {/* Línea separadora */}
-        <Box sx={{ borderBottom: '1px solid', borderColor: 'divider', mb: 2 }} />
-
-        {/* Grid de productos */}
-        <Grid container spacing={2}>
-          {filteredProducts.map((product) => (
-            <Grid key={product.id} xs={12} sm={6} md={3}>
-              <Card variant="outlined">
-                <AspectRatio ratio="1">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    loading="lazy"
-                  />
-                </AspectRatio>
-                <Box sx={{ p: 2 }}>
-                  <Typography level="title-md">{product.name}</Typography>
-                  <Typography level="body-sm">{product.sku}</Typography>
-                  <Typography level="body-md">${product.price.toFixed(2)}</Typography>
-                </Box>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        <ErrorBoundary>
+          <ProductGrid products={products} isLoading={isLoading} error={error} />
+        </ErrorBoundary>
       </Box>
     </Box>
   );

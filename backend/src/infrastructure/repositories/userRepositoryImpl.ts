@@ -1,7 +1,6 @@
 import { UserRepository } from '../../domain/ports/repositories/userRepository';
 import UserModel from '../models/user';
 import { User } from '../../domain/entities/user';
-import { UserRole } from '../../domain/entities/userRoles';
 
 export class UserRepositoryImpl implements UserRepository {
   async findByEmail(email: string): Promise<User | null> {
@@ -33,7 +32,7 @@ export class UserRepositoryImpl implements UserRepository {
       id: userModel.id,
       email: userModel.email,
       password: userModel.password,
-      role: userModel.role as UserRole,
+      role: userModel.role,
       createdAt: userModel.createdAt,
       updatedAt: userModel.updatedAt,
     };

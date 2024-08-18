@@ -3,11 +3,6 @@ import jwt from 'jsonwebtoken';
 import { UserRole } from '../../../../domain/entities/userRoles';
 import { User } from '../../../../domain/entities/user';
 
-interface AuthRequest extends Request {
-  userId?: number;
-  userRole?: UserRole;
-}
-
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 

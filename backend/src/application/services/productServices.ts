@@ -28,4 +28,8 @@ export class ProductService {
   async getAllProducts(sellerId?: string): Promise<Product[]> {
     return this.productRepository.findAll(sellerId ? parseInt(sellerId) : undefined);
   }
+
+  async getMaxPrice(): Promise<number> {
+    return this.productRepository.getMaxPrice();
+  }
 }

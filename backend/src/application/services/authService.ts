@@ -46,6 +46,15 @@ export class AuthService {
     );
   }
 
+  verifyAuthentication(token: string): boolean {
+    try {
+      jwt.verify(token, process.env.JWT_SECRET as string);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async changeUserRole(
     userId: number,
     newRole: UserRole,

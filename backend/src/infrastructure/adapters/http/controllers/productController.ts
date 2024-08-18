@@ -30,14 +30,24 @@ export class ProductController {
   async searchProducts(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, sku, minPrice, maxPrice } = req.query;
-      const products = await this.productService.searchProducts({
-        name: name as string | undefined,
-        sku: sku as string | undefined,
-        minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
-        maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined
-      });
+      
+      console.log('Received search parameters:', { name, sku, minPrice, maxPrice });
+
+      const filters: any = {};
+      if (name) filters.name = name as string;
+      if (sku) filters.sku = sku as string;
+      if (minPrice !== undefined) filters.minPrice = parseFloat(minPrice as string);
+      if (maxPrice !== undefined) filters.maxPrice = parseFloat(maxPrice as string);
+
+      console.log('Filtered parameters:', filters);
+
+      const products = await this.productService.searchProducts(filters);
+      
+      console.log(`Found ${products.length} products`);
+
       res.json(products);
     } catch (error) {
+      console.error('Error in searchProducts:', error);
       next(error);
     }
   }
@@ -47,6 +57,15 @@ export class ProductController {
       const { sellerId } = req.query;
       const products = await this.productService.getAllProducts(sellerId as string | undefined);
       res.json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getMaxPrice(req: Request, res: Response, next: NextFunction) {
+    try {
+      const maxPrice = await this.productService.getMaxPrice();
+      res.json({ maxPrice });
     } catch (error) {
       next(error);
     }

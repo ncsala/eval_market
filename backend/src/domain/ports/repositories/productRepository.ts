@@ -10,4 +10,5 @@ export interface ProductRepository {
     maxPrice?: number;
   }): Promise<Product[]>;
   findAll(sellerId?: number): Promise<Product[]>;
+  getMaxPrice(): Promise<number>;
 }

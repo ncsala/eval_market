@@ -11,7 +11,6 @@ const userRepository = new UserRepositoryImpl();
 const authService = new AuthService(userRepository);
 const authController = new AuthController(authService);
 
-router.get('/test', (req, res) => res.json({ message: 'Auth routes are working' }));
 router.post('/register', validateRegistrationMiddleware, (req, res, next) => authController.register(req, res, next));
 router.post('/login', (req, res, next) => authController.login(req, res, next));
 router.put('/change-role', authMiddleware, roleMiddleware([UserRole.ADMINISTRADOR]), (req: any, res, next) => authController.changeUserRole(req, res, next));
