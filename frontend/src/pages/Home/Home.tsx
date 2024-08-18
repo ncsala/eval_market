@@ -36,23 +36,41 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", p: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", p: 2 }}>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           mb: 2,
-          mr: 4,
-          alignItems: "flex-start", 
+          alignItems: "flex-start",
           justifyContent: "flex-start",
         }}
       >
         <Typography level="h4" sx={{ mr: 2 }}>
           Comprador
         </Typography>
+      </Box>
 
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        {/* Contenedor de los filtros y el input */}
+        <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
+          <Box sx={{ width: 200, mr: 4, flexShrink: 0 }}>
+            {/* Contenido de los filtros */}
+          </Box>
+          <Input
+            endDecorator={<SearchIcon />}
+            placeholder="Buscar por nombre y/o SKU"
+            value={searchTerm}
+            onChange={(e) => updateSearch(e.target.value)}
+            sx={{ width: "40%" }}
+          />
+        </Box>
+        <Divider sx={{ mb: 2, mt: 2 }} />
+      </Box>
+
+      <Box sx={{ display: "flex", width: "100%" }}>
         {/* Filtros */}
-        <Box sx={{ width: 200, mr: 4, mt: 4 }}>
+        <Box sx={{ width: 200, mr: 4, mt: 4, flexShrink: 0 }}>
           <Box
             sx={{
               display: "flex",
@@ -94,18 +112,7 @@ const Home: React.FC = () => {
             <Typography>${localPriceRange[1]}</Typography>
           </Box>
         </Box>
-      </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        {/* Buscador */}
-        <Input
-          endDecorator={<SearchIcon />}
-          placeholder="Buscar por nombre y/o SKU"
-          value={searchTerm}
-          onChange={(e) => updateSearch(e.target.value)}
-          sx={{ width: "50%" }}
-        />
-        <Divider sx={{ mb: 2, mt: 2 }} />
         {/* Productos */}
         <Box sx={{ flexGrow: 1 }}>
           <ErrorBoundary>

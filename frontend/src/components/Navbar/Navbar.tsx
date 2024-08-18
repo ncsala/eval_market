@@ -1,9 +1,9 @@
-import React from 'react';
-import { Box, Typography, Button, Sheet, Menu, MenuItem, IconButton } from '@mui/joy';
-import PersonIcon from '@mui/icons-material/Person';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { logout } from '@/redux/slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Box, Typography, Button, Sheet, Menu, MenuItem } from "@mui/joy";
+import PersonIcon from "@mui/icons-material/Person";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout } from "@/redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,42 +22,64 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     dispatch(logout());
     handleClose();
+    navigate("/");
   };
 
   const handleLogin = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
-  const displayName = user?.email
-    ? user.email.split('@')[0]
-    : 'Usuario';
+  const displayName = user?.email ? user.email.split("@")[0] : "Usuario";
 
   return (
     <Sheet
       component="nav"
       sx={{
         p: 2,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        width: '100%',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderBottom: "1px solid",
+        borderColor: "divider",
+        width: "100%",
       }}
     >
-      <Typography level="title-lg">Company name</Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <IconButton
-          size="sm"
-          variant="outlined"
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Typography
+          level="title-lg"
+          onClick={() => navigate("/")}
+          sx={{ cursor: "pointer" }}
+        >
+          Company name
+        </Typography>
+        <Button
+          variant="plain"
           color="neutral"
-          onClick={user ? handleClick : handleLogin}
+          onClick={() => navigate("/vendedor")}
+        >
+          Vendedor
+        </Button>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            border: "1px solid",
+            borderColor: "neutral.outlinedBorder",
+          }}
         >
           <PersonIcon />
-        </IconButton>
+        </Box>
         {user ? (
           <>
-            <Typography level="body-sm">{displayName}</Typography>
+            <Button variant="outlined" color="neutral" onClick={handleClick}>
+              {displayName}
+            </Button>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
