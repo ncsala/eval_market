@@ -1,14 +1,10 @@
-import { UserRole } from '../../domain/entities/userRoles';
+import { User } from '../../domain/entities/user';
+import { Request as ExpressRequest } from 'express';
 
 declare global {
   namespace Express {
-    export interface Request {
-      user?: {
-        id: number;
-        role: UserRole;
-      };
+    interface Request {
+      user?: User;
     }
   }
 }
-
-export {};

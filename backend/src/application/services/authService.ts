@@ -27,13 +27,14 @@ export class AuthService {
 
     return newUser;
   }
+  
   async login(email: string, password: string): Promise<string | null> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new AppError("Usuario o contraseña incorrectos.", 401);
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password!);
     if (!isPasswordValid) {
       throw new AppError("Usuario o contraseña incorrectos.", 401);
     }

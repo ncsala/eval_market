@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { UserRole } from '../../../../domain/entities/userRoles';
+import { User } from '../../../../domain/entities/user';
 
 interface AuthRequest extends Request {
   userId?: number;
-  userRole?: string;
+  userRole?: UserRole;
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
@@ -14,18 +16,21 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: number, role: string };
-    req.userId = decoded.userId;
-    req.userRole = decoded.role;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: number, role: UserRole, email: string };
+    (req as Request & { user?: Partial<User> }).user = {
+      id: decoded.userId,
+      role: decoded.role,
+      email: decoded.email
+    };
     next();
   } catch (error) {
     res.status(401).json({ message: 'Token inválido' });
   }
 };
 
-export const roleMiddleware = (roles: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (!req.userRole || !roles.includes(req.userRole)) {
+export const roleMiddleware = (roles: UserRole[]) => {
+  return (req: Request & { user?: User }, res: Response, next: NextFunction) => {
+    if (!req.user || !req.user.role || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Acceso denegado' });
     }
     next();

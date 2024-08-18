@@ -1,17 +1,10 @@
-import { Request, Response, NextFunction } from "express";
-import { UserRole, isValidRole } from "../../../../domain/entities/userRoles";
-import { AppError } from "./errorMiddleware";
-
-interface CustomRequest extends Request {
-  user?: {
-    id: number;
-    role: UserRole;
-  };
-}
+import { Request, Response, NextFunction } from 'express';
+import { UserRole, isValidRole } from '../../../../domain/entities/userRoles';
+import { AppError } from './errorMiddleware';
+import { User } from '../../../../domain/entities/user';
 
 export const validateRole = (
-  req: Request,
-  res: Response,
+  req: Request & { user?: Partial<User> },  
   next: NextFunction
 ) => {
   const { role } = req.body;
@@ -28,8 +21,12 @@ export const validateRole = (
 };
 
 export const roleMiddleware = (allowedRoles: UserRole[]) => {
-  return (req: CustomRequest , res: Response, next: NextFunction) => {
-    const userRole = (req as any).user?.role;
+  return (
+    req: Request & { user?: Partial<User> },  
+    res: Response,
+    next: NextFunction
+  ) => {
+    const userRole = req.user?.role;
 
     if (!userRole || !isValidRole(userRole)) {
       throw new AppError("Rol de usuario no válido", 403);
