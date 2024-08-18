@@ -1,10 +1,9 @@
 import React from 'react';
-import { Box, Typography, Button, Sheet, Menu, MenuItem } from '@mui/joy';
+import { Box, Typography, Button, Sheet, Menu, MenuItem, IconButton } from '@mui/joy';
 import PersonIcon from '@mui/icons-material/Person';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { logout } from '@/redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { UserRole } from '@/types/user';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +22,6 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     dispatch(logout());
     handleClose();
-    navigate('/');
   };
 
   const handleLogin = () => {
@@ -47,34 +45,19 @@ const Navbar: React.FC = () => {
         width: '100%',
       }}
     >
+      <Typography level="title-lg">Company name</Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Typography level="title-lg" onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
-          Company name
-        </Typography>
-        <Button variant="plain" color="neutral" onClick={() => navigate('/vendedor')}>
-          Vendedor
-        </Button>
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <IconButton
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          onClick={user ? handleClick : handleLogin}
+        >
+          <PersonIcon />
+        </IconButton>
         {user ? (
           <>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                border: '1px solid',
-                borderColor: 'neutral.outlinedBorder',
-              }}
-            >
-              <PersonIcon />
-            </Box>
-            <Button variant="outlined" color="neutral" onClick={handleClick}>
-              {displayName}
-            </Button>
+            <Typography level="body-sm">{displayName}</Typography>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}

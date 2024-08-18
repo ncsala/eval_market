@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
-import { productService } from '../services/productService';
-import { Product, SearchFilters } from '../types/product';
+import { productService } from '@/services/productService';
+import { SearchFilters } from '@/types';
 
 export const useProductSearch = () => {
   const [filters, setFilters] = useState<SearchFilters>({
@@ -40,6 +40,16 @@ export const useProductSearch = () => {
     setFilters(prev => ({ ...prev, minPrice, maxPrice }));
   }, []);
 
+  const resetFilters = useCallback(() => {
+    setFilters({
+      name: '',
+      sku: '',
+      minPrice: 0,
+      maxPrice: maxPrice,
+    });
+    setSearchTerm('');
+  }, [maxPrice]);
+
   return { 
     products, 
     isLoading, 
@@ -48,6 +58,7 @@ export const useProductSearch = () => {
     updateSearch, 
     updatePriceRange, 
     maxPrice, 
-    searchTerm 
+    searchTerm,
+    resetFilters
   };
 };
