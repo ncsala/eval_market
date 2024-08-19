@@ -13,7 +13,6 @@ export class AppError extends Error {
   }
 }
 
-// Middleware de manejo de errores
 export const errorMiddleware = (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
 
@@ -24,14 +23,12 @@ export const errorMiddleware = (err: Error, req: Request, res: Response, next: N
     });
   }
 
-  // Para errores no operacionales o inesperados
   return res.status(500).json({
     status: 'error',
     message: 'Algo salió mal en el servidor'
   });
 };
 
-// Middleware para manejar rutas no encontradas
 export const notFoundMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const error = new AppError(`Ruta no encontrada: ${req.originalUrl}`, 404);
   next(error);

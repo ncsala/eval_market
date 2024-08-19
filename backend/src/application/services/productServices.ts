@@ -27,7 +27,6 @@ export class ProductService {
       throw new AppError("Vendedor no encontrado", 404);
     }
 
-    // Extraer el vendor del email del usuario
     const vendor = seller.email.split("@")[0];
 
     return this.productRepository.create({

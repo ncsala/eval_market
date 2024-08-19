@@ -18,7 +18,7 @@ export class AuthService {
     const newUser = await this.userRepository.create({
       email,
       password: hashedPassword,
-      role: UserRole.COMPRADOR, // Asignamos un rol por defecto
+      role: UserRole.COMPRADOR,
     });
   
     if (!newUser) {
