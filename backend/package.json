@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "tsc && cp package.json dist/ && cp .env dist/",
     "start": "node dist/server.js",
     "dev": "nodemon --exec ts-node src/server.ts",
-    "test": "cross-env NODE_ENV=test jest --watchAll --detectOpenHandles",
-    "build": "tsc"
+    "test": "cross-env NODE_ENV=test jest --watchAll --detectOpenHandles"
   },
   "author": "Nicolas Caceres Sala",
   "license": "ISC",
@@ -18,11 +18,11 @@
     "jsonwebtoken": "9.0.2",
     "pg": "8.12.0",
     "pg-hstore": "2.3.4",
-    "sequelize": "6.37.3"
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
-    "@types/bcrypt": "5.0.2",
-    "@types/cors": "2.8.17",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
     "@types/dotenv": "6.1.1",
     "@types/express": "4.17.21",
     "@types/express-serve-static-core": "4.19.5",

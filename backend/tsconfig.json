@@ -7,6 +7,10 @@
       "./src/types"
     ],
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "types": ["node", "jest"],
+    "lib": ["es2017", "dom"],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
@@ -18,3 +22,5 @@
     "src/types/**/*"
   ]
 }
+
+
