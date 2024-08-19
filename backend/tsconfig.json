@@ -6,13 +6,15 @@
       "./node_modules/@types",
       "./src/types"
     ],
-    "esModuleInterop": true,     
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "include": [
     "src/**/*",
     "src/types/**/*"
-  ],
+  ]
 }
