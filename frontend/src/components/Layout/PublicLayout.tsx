@@ -1,4 +1,3 @@
-// PublicLayout.tsx
 import React from 'react';
 import { Box } from '@mui/joy';
 import { Navbar } from "@/components";

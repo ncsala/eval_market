@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   register as registerAction,
   setUserRole,
+  login,
   clearError,
 } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -67,11 +68,23 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
           await dispatch(
             setUserRole({ email: data.Correo, role: selectedRole })
           ).unwrap();
+          await dispatch(
+            login({ email: data.Correo, password: data.Contraseña })
+          ).unwrap();
           reset();
           onClose();
-          navigate("/login", { state: { registrationSuccess: true } });
+          switch (selectedRole) {
+            case UserRole.COMPRADOR:
+              navigate("/");
+              break;
+            case UserRole.VENDEDOR:
+              navigate("/vendedor");
+              break;
+            default:
+              navigate("/");
+          }
         } catch (error) {
-          console.error("Role selection failed:", error);
+          console.error("Role selection or login failed:", error);
         }
       }
     }
