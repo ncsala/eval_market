@@ -1,40 +1,53 @@
-import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Box, Typography, Input, Button, FormControl, FormLabel, FormHelperText } from '@mui/joy';
-import { useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { productService, CreateProductDTO } from '@/services/productService';
-import { useAppSelector } from '@/redux/hooks';
+import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  Box,
+  Typography,
+  Input,
+  Button,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+} from "@mui/joy";
+import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { productService } from "@/services/productService";
+import { CreateProductDTO } from "@/types";
+import { useAppSelector } from "@/redux/hooks";
 
-type CreateProductInput = Omit<CreateProductDTO, 'sellerId'>;
+type CreateProductInput = Omit<CreateProductDTO, "sellerId">;
 
 const CreateProduct: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateProductInput>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateProductInput>();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
 
   const onSubmit: SubmitHandler<CreateProductInput> = async (data) => {
     try {
       if (!user) {
-        throw new Error('Usuario no autenticado');
+        throw new Error("Usuario no autenticado");
       }
       const newProduct = await productService.createProduct({
         ...data,
-        sellerId: user.id
+        sellerId: user.id,
       });
-      console.log('Producto creado:', newProduct);
-      navigate('/inventory');
+      console.log("Producto creado:", newProduct);
+      navigate("/inventory");
     } catch (error) {
-      console.error('Error al crear el producto:', error);
+      console.error("Error al crear el producto:", error);
     }
   };
 
   return (
-    <Box sx={{ p: 2, width: '100%', maxWidth: 400 }}>
+    <Box sx={{ p: 2, width: "100%", maxWidth: 400 }}>
       <Button
         startDecorator={<ArrowBackIcon />}
         variant="plain"
-        onClick={() => navigate('/inventory')}
+        onClick={() => navigate("/inventory")}
         sx={{ mb: 2 }}
       >
         Regresar
@@ -49,7 +62,9 @@ const CreateProduct: React.FC = () => {
             {...register("name", { required: "El nombre es requerido" })}
             placeholder="Product Name 01"
           />
-          {errors.name && <FormHelperText>{errors.name.message}</FormHelperText>}
+          {errors.name && (
+            <FormHelperText>{errors.name.message}</FormHelperText>
+          )}
         </FormControl>
         <FormControl error={!!errors.sku} sx={{ mb: 2 }}>
           <FormLabel>SKU</FormLabel>
@@ -63,27 +78,39 @@ const CreateProduct: React.FC = () => {
           <FormLabel>Cantidad</FormLabel>
           <Input
             type="number"
-            {...register("quantity", { 
+            {...register("quantity", {
               required: "La cantidad es requerida",
-              min: { value: 0, message: "La cantidad debe ser mayor o igual a 0" }
+              min: {
+                value: 0,
+                message: "La cantidad debe ser mayor o igual a 0",
+              },
             })}
             placeholder="20"
           />
-          {errors.quantity && <FormHelperText>{errors.quantity.message}</FormHelperText>}
+          {errors.quantity && (
+            <FormHelperText>{errors.quantity.message}</FormHelperText>
+          )}
         </FormControl>
         <FormControl error={!!errors.price} sx={{ mb: 2 }}>
           <FormLabel>Precio</FormLabel>
           <Input
             type="number"
-            {...register("price", { 
+            {...register("price", {
               required: "El precio es requerido",
-              min: { value: 0, message: "El precio debe ser mayor o igual a 0" }
+              min: {
+                value: 0,
+                message: "El precio debe ser mayor o igual a 0",
+              },
             })}
             placeholder="99.99"
           />
-          {errors.price && <FormHelperText>{errors.price.message}</FormHelperText>}
+          {errors.price && (
+            <FormHelperText>{errors.price.message}</FormHelperText>
+          )}
         </FormControl>
-        <Button type="submit" sx={{ mt: 2 }}>CREAR</Button>
+        <Button type="submit" sx={{ mt: 2 }}>
+          CREAR
+        </Button>
       </form>
     </Box>
   );

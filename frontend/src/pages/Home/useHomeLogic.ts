@@ -29,10 +29,10 @@ export const useHomeLogic = () => {
     debouncedSearch({ ...filters, ...newFilters });
   };
 
-  const handlePriceChange = (event: Event, newValue: number | number[]) => {
+  const handlePriceChange = (_event: Event, newValue: number | number[]) => {
     const [minPrice, maxPrice] = newValue as number[];
     updateSearch({ minPrice, maxPrice });
-  };
+  };  
 
   return { products, isLoading, error, filters, updateSearch, handlePriceChange };
 };
