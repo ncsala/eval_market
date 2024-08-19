@@ -6,7 +6,7 @@ Este proyecto implementa un marketplace con funcionalidades para compradores, ve
 
 Para acceder y evaluar la pantalla de administrador, que no es accesible de otra forma, utilice las siguientes credenciales:
 
-- **Email**: admin@example.com
+- **Email**: <admin@example.com>
 - **Contraseña**: 123456
 
 Estas credenciales le permitirán acceder a la vista específica de administrador, donde podrá ver y gestionar todos los productos registrados en el marketplace.
@@ -22,6 +22,8 @@ Estas credenciales le permitirán acceder a la vista específica de administrado
 7. [Estructura del Proyecto](#estructura-del-proyecto)
 8. [Arquitectura del Backend](#arquitectura-del-backend)
 9. [Integración Frontend-Backend](#integración-frontend-backend)
+10.[Características de Seguridad](#características-de-seguridad)
+11.[Estructura de la Base de Datos](#estructura-de-la-base-de-datos)
 
 ## Requisitos
 
@@ -58,18 +60,21 @@ VITE_API_URL=http://localhost:3001/api/v1
 ## Instalación
 
 1. Clona el repositorio:
+
    ```
    git clone https://github.com/tu-usuario/marketplace-project.git
    cd marketplace-project
    ```
 
 2. Instala las dependencias del backend:
+
    ```
    cd backend
    npm install
    ```
 
 3. Instala las dependencias del frontend:
+
    ```
    cd ../frontend
    npm install
@@ -78,12 +83,14 @@ VITE_API_URL=http://localhost:3001/api/v1
 ## Uso
 
 1. Inicia el backend:
+
    ```
    cd backend
    npm run dev
    ```
 
 2. En otra terminal, inicia el frontend:
+
    ```
    cd frontend
    npm run dev
@@ -235,3 +242,78 @@ Este proyecto se compone de un backend en Node.js/Express y un frontend en React
 ### 7. Renderizado Condicional
 
 - **Componentes Inteligentes**: El frontend utiliza componentes que se renderizan condicionalmente basados en el estado de autenticación y el rol del usuario.
+
+## Características de Seguridad
+
+El proyecto implementa varias medidas de seguridad para proteger los datos de los usuarios y asegurar el correcto funcionamiento del sistema:
+
+### Autenticación y Autorización
+
+1. **JSON Web Tokens (JWT)**:
+   - Se utiliza JWT para el control de sesiones y la autenticación de usuarios.
+   - Cada token contiene información encriptada sobre el usuario, incluyendo su rol y permisos.
+   - Los tokens se envían en cada solicitud para autenticar al usuario.
+
+2. **Proceso de Autenticación**:
+   - Cuando un usuario inicia sesión, se verifica su identidad y se genera un JWT.
+   - Este token se almacena en el lado del cliente (localStorage) y se incluye en las cabeceras de las solicitudes HTTP subsiguientes.
+
+3. **Autorización basada en roles**:
+   - El sistema implementa un control de acceso basado en roles (RBAC).
+   - Los roles (comprador, vendedor, administrador) determinan qué acciones puede realizar un usuario en el sistema.
+   - El backend verifica los permisos del usuario antes de permitir acciones específicas.
+
+### Seguridad de Contraseñas
+
+1. **Hashing con bcrypt**:
+   - Todas las contraseñas de usuario se hashean utilizando bcrypt antes de almacenarse en la base de datos.
+   - bcrypt proporciona un alto nivel de seguridad contra ataques de fuerza bruta y de diccionario.
+
+2. **Salting**:
+   - bcrypt implementa automáticamente el salting de contraseñas, añadiendo una capa adicional de seguridad.
+
+### Protección de Rutas
+
+- Las rutas sensibles en el backend están protegidas y requieren un token JWT válido para acceder.
+- En el frontend, se implementa un sistema de rutas protegidas que verifica la autenticación y los roles antes de permitir el acceso a ciertas páginas o funcionalidades.
+
+### Manejo Seguro de Datos
+
+- Los datos sensibles, como las credenciales de la base de datos y las claves secretas para JWT, se almacenan en variables de entorno y no se incluyen en el código fuente.
+
+Estas medidas de seguridad trabajan en conjunto para proporcionar un entorno seguro para los usuarios del marketplace, protegiendo tanto los datos personales como la integridad del sistema.
+
+## Estructura de la Base de Datos
+
+![Estructura de Base de Datos](./docs/DBModel.jpg)
+
+El sistema utiliza una base de datos relacional con dos tablas principales: Products y Users. A continuación se describe la estructura y relaciones de estas tablas:
+
+### Tabla Products
+
+- **id**: Identificador único del producto (clave primaria)
+- **name**: Nombre del producto
+- **sku**: Código único de producto (Stock Keeping Unit)
+- **quantity**: Cantidad disponible del producto
+- **price**: Precio del producto
+- **sellerId**: ID del vendedor (clave foránea que relaciona con la tabla Users)
+- **vendor**: Nombre del vendedor
+- **createdAt**: Fecha y hora de creación del registro
+- **updatedAt**: Fecha y hora de la última actualización del registro
+
+### Tabla Users
+
+- **id**: Identificador único del usuario (clave primaria)
+- **email**: Correo electrónico del usuario (único)
+- **password**: Contraseña del usuario (hasheada)
+- **role**: Rol del usuario en el sistema
+- **createdAt**: Fecha y hora de creación del registro
+- **updatedAt**: Fecha y hora de la última actualización del registro
+
+### Relaciones
+
+- Existe una relación uno a muchos (1:N) entre Users y Products.
+- Un usuario (vendedor) puede tener múltiples productos, pero cada producto pertenece a un solo vendedor.
+- Esta relación se establece a través del campo `sellerId` en la tabla Products, que es una clave foránea que referencia el `id` de la tabla Users.
+
+Esta estructura permite una gestión eficiente de los productos y usuarios en el marketplace, facilitando operaciones como la búsqueda de productos por vendedor, la gestión de inventario por parte de los vendedores, y el control de acceso basado en roles de usuario.
