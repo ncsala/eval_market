@@ -20,7 +20,9 @@ const Home: React.FC = () => {
   const [localPriceRange, setLocalPriceRange] = useState([0, maxPrice]);
 
   useEffect(() => {
-    setLocalPriceRange([filters.minPrice, filters.maxPrice]);
+    const minPrice = filters.minPrice ?? 0;
+    const maxPrice = filters.maxPrice ?? localPriceRange[1];
+    setLocalPriceRange([minPrice, maxPrice]);
   }, [filters.minPrice, filters.maxPrice]);
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", p: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", pl: 3, pr: 3, pb: 3 }}>
       <Box
         sx={{
           display: "flex",
@@ -52,11 +54,9 @@ const Home: React.FC = () => {
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        {/* Contenedor de los filtros y el input */}
+        {/* Buscador */}
         <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-          <Box sx={{ width: 200, mr: 4, flexShrink: 0 }}>
-            {/* Contenido de los filtros */}
-          </Box>
+          <Box sx={{ width: 200, mr: 4, flexShrink: 0 }}></Box>
           <Input
             endDecorator={<SearchIcon />}
             placeholder="Buscar por nombre y/o SKU"

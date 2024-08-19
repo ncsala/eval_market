@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
-import { productService } from '../../services/productService';
-import { SearchFilters } from '../../types/product';
+import { productService } from '@/services';
+import { SearchFilters } from '@/types';
 
 export const useHomeLogic = () => {
   const [filters, setFilters] = useState<SearchFilters>({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Card, AspectRatio, Box, Typography, CircularProgress } from '@mui/joy';
-import { Product } from '../../types/product';
+import { Product } from '@/types';
 
 interface ProductGridProps {
   products: Product[] | undefined;

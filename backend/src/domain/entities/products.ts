@@ -1,3 +1,5 @@
+import { User } from './user';
+
 export interface Product {
   id: number;
   name: string;
@@ -5,6 +7,11 @@ export interface Product {
   quantity: number;
   price: number;
   sellerId: number;
+  vendor?: string;
+  seller?: {
+    id: number;
+    email: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }

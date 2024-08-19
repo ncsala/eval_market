@@ -8,7 +8,9 @@ export interface ProductRepository {
     sku?: string;
     minPrice?: number;
     maxPrice?: number;
+    vendors?: string[];
   }): Promise<Product[]>;
   findAll(sellerId?: number): Promise<Product[]>;
   getMaxPrice(): Promise<number>;
+  getVendors(): Promise<string[]>;
 }

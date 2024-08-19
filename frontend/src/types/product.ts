@@ -3,12 +3,24 @@ export interface Product {
   name: string;
   sku: string;
   price: number;
-  imageUrl: string;
+  quantity: number;
+  imageUrl?: string;
+  vendor?: string;
+  sellerId?: number;
 }
 
 export interface SearchFilters {
+  name?: string;
+  sku?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  vendors?: string[];
+}
+
+export interface CreateProductDTO {
   name: string;
   sku: string;
-  minPrice: number;
-  maxPrice: number;
+  price: number;
+  quantity: number;
+  sellerId: number;
 }

@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { Box, Typography, Input, Button, FormControl, FormLabel, Alert } from '@mui/joy';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { login, clearError } from '../../redux/slices/authSlice';
-import { RegisterModal } from '@/components/Auth';
+import { RegisterModal } from '@/components';
 
 interface LoginFormInputs {
   Correo: string;

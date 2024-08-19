@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { authService } from "../../services/authService";
-import { User, AuthState } from "../../types/user";
+import { User, AuthState, UserRole } from "../../types/user";
 
 const initialState: AuthState = {
   user: null,
@@ -15,11 +15,11 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 export const register = createAsyncThunk(
   "auth/register",
   async (
-    { email, password }: { email: string; password: string },
+    { email, password, confirmPassword }: { email: string; password: string; confirmPassword: string },
     { rejectWithValue }
   ) => {
     try {
-      await authService.register(email, password);
+      await authService.register(email, password, confirmPassword);
       return;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -35,6 +35,18 @@ export const login = createAsyncThunk(
   ) => {
     try {
       const user = await authService.login(email, password);
+      return user;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const setUserRole = createAsyncThunk(
+  "auth/setUserRole",
+  async ({ email, role }: { email: string; role: UserRole }, { rejectWithValue }) => {
+    try {
+      const user = await authService.setUserRole(email, role);
       return user;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -92,6 +104,9 @@ const authSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(setUserRole.fulfilled, (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
       });
   },
 });

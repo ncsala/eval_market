@@ -14,5 +14,6 @@ const authController = new AuthController(authService);
 router.post('/register', validateRegistrationMiddleware, (req, res, next) => authController.register(req, res, next));
 router.post('/login', (req, res, next) => authController.login(req, res, next));
 router.put('/change-role', authMiddleware, roleMiddleware([UserRole.ADMINISTRADOR]), (req: any, res, next) => authController.changeUserRole(req, res, next));
+router.post('/set-role', (req, res, next) => authController.setUserRole(req, res, next));
 
 export default router;

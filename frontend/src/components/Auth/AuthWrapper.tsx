@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setUser, logout } from '../../redux/slices/authSlice';
-import { User, UserRole } from '../../types/user';
+import { User, UserRole } from '@/types';
 
 interface AuthWrapperProps {
   children: React.ReactNode;

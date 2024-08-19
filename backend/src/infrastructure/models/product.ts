@@ -8,6 +8,7 @@ class Product extends Model {
   public quantity!: number;
   public price!: number;
   public sellerId!: number;
+  public vendor!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -45,6 +46,10 @@ Product.init(
     sellerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    vendor: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

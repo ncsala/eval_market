@@ -13,19 +13,33 @@ export class AuthService {
     if (existingUser) {
       throw new AppError("El usuario ya existe", 400);
     }
-
+  
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await this.userRepository.create({
       email,
       password: hashedPassword,
-      role: UserRole.COMPRADOR,
+      role: UserRole.COMPRADOR, // Asignamos un rol por defecto
     });
-
+  
     if (!newUser) {
       throw new AppError("No se pudo crear el usuario", 500);
     }
-
+  
     return newUser;
+  }
+  
+  async setUserRole(email: string, role: UserRole): Promise<User> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new AppError("Usuario no encontrado", 404);
+    }
+  
+    if (role !== UserRole.COMPRADOR && role !== UserRole.VENDEDOR) {
+      throw new AppError("Rol no válido", 400);
+    }
+  
+    user.role = role;
+    return this.userRepository.update(user);
   }
 
   async login(email: string, password: string): Promise<string | null> {

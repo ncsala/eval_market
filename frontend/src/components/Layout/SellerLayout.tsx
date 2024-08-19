@@ -1,8 +1,6 @@
-// SellerLayout.tsx
 import React from 'react';
 import { Box } from '@mui/joy';
-import Navbar from '../Navbar/Navbar';
-import Sidebar from '../Sidebar/Sidebar';
+import { Navbar, Sidebar } from "@/components";
 
 const SellerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
