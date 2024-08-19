@@ -17,16 +17,36 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading, error })
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid key={product.id} xs={12} sm={6} md={3}>
-          <Card variant="outlined">
-            <AspectRatio ratio="1">
+          <Card 
+            variant="outlined" 
+            sx={{
+              height: '100%',
+              minHeight: '290px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <AspectRatio ratio="1" sx={{ flexGrow: 1 }}>
               <img
                 src={product.imageUrl || 'https://via.placeholder.com/150'}
                 alt={product.name}
                 loading="lazy"
               />
             </AspectRatio>
-            <Box sx={{ p: 2 }}>
-              <Typography level="title-md">{product.name}</Typography>
+            <Box sx={{ p: 2, flexGrow: 0 }}>
+              <Typography 
+                level="title-md" 
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  ...(product.name.length > 20 && { fontSize: 'smaller' })
+                }}
+              >
+                {product.name}
+              </Typography>
               <Typography level="body-sm">{product.sku}</Typography>
               <Typography level="body-md">${product.price.toFixed(2)}</Typography>
             </Box>

@@ -8,6 +8,7 @@ import {
   Alert,
   IconButton,
 } from "@mui/joy";
+import { Link as RouterLink } from "react-router-dom";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useAppSelector } from "@/redux/hooks";
 import { useNavigate } from "react-router-dom";
@@ -144,11 +145,19 @@ const SellerView: React.FC = () => {
           </Card>
 
           {!user && (
-            <Link href="/login" underline="hover" sx={{ mt: 2 }}>
+            <RouterLink
+              to="/login"
+              style={{
+                marginTop: "16px",
+                color: "inherit",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
               Inicia sesión para poder ver tu inventario
-            </Link>
+            </RouterLink>
           )}
-        </Box>  
+        </Box>
       )}
     </Box>
   );
