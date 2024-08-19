@@ -1,5 +1,14 @@
-import React from "react";
-import { Box, Typography, Button, Card, Link } from "@mui/joy";
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  Link,
+  Alert,
+  IconButton,
+} from "@mui/joy";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useAppSelector } from "@/redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { UserRole } from "@/types/user";
@@ -7,9 +16,16 @@ import { UserRole } from "@/types/user";
 const SellerView: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
+  const [showAlert, setShowAlert] = useState(false);
 
-  const handleLogin = () => {
-    navigate("/login");
+  const handleAction = () => {
+    if (user && user.role !== UserRole.VENDEDOR) {
+      setShowAlert(true);
+    } else if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/inventory/create");
+    }
   };
 
   return (
@@ -34,6 +50,26 @@ const SellerView: React.FC = () => {
             height: "100%",
           }}
         >
+          {showAlert && user && user.role !== UserRole.VENDEDOR && (
+            <Alert
+              color="warning"
+              variant="soft"
+              sx={{ mb: 2, width: "80%", maxWidth: 1200 }}
+              endDecorator={
+                <IconButton
+                  variant="soft"
+                  size="sm"
+                  color="warning"
+                  onClick={() => setShowAlert(false)}
+                >
+                  <CloseRoundedIcon />
+                </IconButton>
+              }
+            >
+              Para acceder a las funciones de vendedor, debes cerrar sesión y
+              registrarte como vendedor.
+            </Alert>
+          )}
           <Card
             variant="outlined"
             sx={{
@@ -92,31 +128,27 @@ const SellerView: React.FC = () => {
                   Conocer más
                 </Link>
                 <Button
-                  onClick={handleLogin}
+                  onClick={handleAction}
                   sx={{
                     backgroundColor: "lightgray",
                     color: "black",
-                    border: "2px solid #a9a9a9",
-                    borderRadius: "5px",
-                    padding: "8px 16px",
                     "&:hover": {
                       backgroundColor: "#d3d3d3",
-                      borderColor: "#8c8c8c",
-                      color: "black",
                     },
                   }}
                 >
-                  CREAR PRODUCTO
+                  {user ? "CREAR PRODUCTO" : "INICIAR SESIÓN"}
                 </Button>
               </Box>
             </Box>
           </Card>
 
-          <Link href="/login" underline="hover" sx={{ mt: 2 }}>
-            Inicia sesión para poder ver tu inventario
-          </Link>
-          <Typography level="body-md" sx={{ mb: 2 }}></Typography>
-        </Box>
+          {!user && (
+            <Link href="/login" underline="hover" sx={{ mt: 2 }}>
+              Inicia sesión para poder ver tu inventario
+            </Link>
+          )}
+        </Box>  
       )}
     </Box>
   );

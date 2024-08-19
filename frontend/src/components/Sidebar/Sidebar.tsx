@@ -11,8 +11,10 @@ const Sidebar: React.FC = () => {
 
   const menuItems = [
     { title: 'Home', path: '/', roles: null },
-    { title: 'Inventario', path: '/inventory', roles: null },
     { title: 'Dashboard', path: '/admin', roles: [UserRole.ADMINISTRADOR] },
+    { title: 'Cotizaciones', path: '#', roles: null },
+    { title: 'Órdenes', path: '#', roles: null },
+    { title: 'Inventario', path: '/inventory', roles: null },
     { title: 'Crear Producto', path: '/inventory/create', roles: [UserRole.VENDEDOR] },
   ];
 

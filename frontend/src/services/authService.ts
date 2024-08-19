@@ -2,7 +2,7 @@ import axios from "axios";
 import { User, UserRole } from "../types/user";
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api/v1/";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api/v1";
 
 interface DecodedToken {
   userId: number;
@@ -14,7 +14,7 @@ interface DecodedToken {
 export const authService = {
   async register(email: string, password: string, confirmPassword: string): Promise<void> {
     try {
-      await axios.post(`${API_URL}auth/register`, { email, password, confirmPassword });
+      await axios.post(`${API_URL}/auth/register`, { email, password, confirmPassword });
     } catch (error: any) {
       if (error.response && error.response.data) {
         throw new Error(error.response.data.message || "Error en el registro");
@@ -25,7 +25,7 @@ export const authService = {
 
   async setUserRole(email: string, role: UserRole): Promise<User> {
     try {
-      const response = await axios.post(`${API_URL}auth/set-role`, { email, role });
+      const response = await axios.post(`${API_URL}/auth/set-role`, { email, role });
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data) {
