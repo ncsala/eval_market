@@ -1,1 +1,1 @@
-export { default as SellerView } from './SellerView';
+export { default } from './SellerView';
