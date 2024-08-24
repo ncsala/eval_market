@@ -1,24 +1,44 @@
-import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '@/redux/hooks';
-import { LayoutWrapper } from "@/components";
-import { AuthorizedRouteProps } from './types';
+import { Navigate } from "react-router-dom";
+import { useAppSelector } from "@/redux/hooks";
+import { UserRole } from "@/types";
+import React from "react";
 
-const AuthorizedRoute: React.FC<AuthorizedRouteProps> = ({ Element, allowedRoles, fallbackPath, isPublic }) => {
-  const { user } = useAppSelector((state) => state.auth);
+interface AuthorizedRouteProps {
+  Element: React.ComponentType;
+  allowedRoles?: UserRole[];
+  fallbackPath: string;
+}
 
-  console.log('User:', user);
-  console.log('Allowed Roles:', allowedRoles);
-  console.log('Is Public:', isPublic);
-  
-  if (isPublic || (user && allowedRoles && allowedRoles.includes(user.role))) {
-    return (
-      <LayoutWrapper>
-        <Element />
-      </LayoutWrapper>
-    );
+const AuthorizedRoute: React.FC<AuthorizedRouteProps> = ({
+  Element,
+  allowedRoles = [],
+  fallbackPath,
+}) => {
+  const { user, isInitialized } = useAppSelector((state) => ({
+    user: state.auth.user,
+    isInitialized: state.auth.isInitialized,
+  }));
+
+  if (!isInitialized) {
+    // Mostrar un indicador de carga o nada mientras isInitialized es false
+    return <div>Cargando...</div>;
   }
-  
-  return <Navigate to={fallbackPath} />;
+
+  if (!user) {
+    // Usuario no autenticado, redirigir a la ruta de fallback
+    return <Navigate to={fallbackPath} />;
+  }
+
+  const userRole = user.role.toLowerCase();
+  const normalizedAllowedRoles = allowedRoles.map(role => role.toLowerCase());
+
+  if (normalizedAllowedRoles.length > 0 && !normalizedAllowedRoles.includes(userRole)) {
+    // Usuario autenticado pero sin permisos para esta ruta
+    return <Navigate to={fallbackPath} />;
+  }
+
+  // Usuario tiene acceso a esta ruta
+  return <Element />;
 };
 
 export default AuthorizedRoute;

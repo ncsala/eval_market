@@ -12,7 +12,7 @@ const CreateProduct = lazy(() => import('@/pages/Inventory/CreateProduct'));
 export const routes: RouteConfig[] = [
   { path: '/login', element: Login, isPublic: true },
   { path: '/', element: Home, isPublic: true },
-  { path: '/vendedor', element: SellerView, roles: [UserRole.VENDEDOR, UserRole.ADMINISTRADOR] },
+  { path: '/vendedor', element: SellerView, isPublic: true },
   { path: '/inventory', element: InventoryList, roles: [UserRole.VENDEDOR] },
   { path: '/inventory/create', element: CreateProduct, roles: [UserRole.VENDEDOR] },
   { path: '/admin', element: AdminDashboard, roles: [UserRole.ADMINISTRADOR] },

@@ -22,17 +22,7 @@ import {
 } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { UserRole } from "@/types";
-
-interface RegisterModalProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-interface RegisterFormInputs {
-  Correo: string;
-  Contraseña: string;
-  "Confirmar contraseña": string;
-}
+import { RegisterModalProps, RegisterFormInputs } from "./types";
 
 const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose }) => {
   const {

@@ -6,6 +6,7 @@ const initialState: AuthState = {
   user: null,
   isLoading: false,
   error: null,
+  isInitialized: false,
 };
 
 export const logout = createAsyncThunk("auth/logout", async () => {
@@ -62,6 +63,7 @@ export const setUserRole = createAsyncThunk(
   }
 );
 
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -72,6 +74,9 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
     },
+    setInitialized: (state, action: PayloadAction<boolean>) => {
+      state.isInitialized = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -125,5 +130,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, setUser } = authSlice.actions;
+export const { clearError, setUser, setInitialized } = authSlice.actions;
 export default authSlice.reducer;
