@@ -9,11 +9,23 @@ const SellerView = lazy(() => import('@/pages/SellerView'));
 const InventoryList = lazy(() => import('@/pages/Inventory/InventoryList'));
 const CreateProduct = lazy(() => import('@/pages/Inventory/CreateProduct'));
 
-export const routes: RouteConfig[] = [
+const publicRoutes: RouteConfig[] = [
   { path: '/login', element: Login, isPublic: true },
   { path: '/', element: Home, isPublic: true },
   { path: '/vendedor', element: SellerView, isPublic: true },
+];
+
+const sellerRoutes: RouteConfig[] = [
   { path: '/inventory', element: InventoryList, roles: [UserRole.VENDEDOR] },
   { path: '/inventory/create', element: CreateProduct, roles: [UserRole.VENDEDOR] },
+];
+
+const adminRoutes: RouteConfig[] = [
   { path: '/admin', element: AdminDashboard, roles: [UserRole.ADMINISTRADOR] },
+];
+
+export const routes: RouteConfig[] = [
+  ...publicRoutes,
+  ...sellerRoutes,
+  ...adminRoutes,
 ];

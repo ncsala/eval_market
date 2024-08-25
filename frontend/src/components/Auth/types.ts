@@ -7,7 +7,7 @@ export interface AuthWrapperProps {
 export interface AuthorizedRouteProps {
   Element: React.ComponentType;
   allowedRoles?: UserRole[];
-  fallbackPath?: string;
+  fallbackPath: string;
   isPublic?: boolean;
 }
 
@@ -20,5 +20,17 @@ export interface RegisterFormInputs {
   Correo: string;
   Contraseña: string;
   "Confirmar contraseña": string;
+}
+
+export enum AuthStatus {
+  LOADING = 'LOADING',
+  AUTHENTICATED = 'AUTHENTICATED',
+  UNAUTHENTICATED = 'UNAUTHENTICATED'
+}
+
+export interface AuthorizedRouteProps {
+  Element: React.ComponentType;
+  allowedRoles?: UserRole[];
+  fallbackPath: string;
 }
 
